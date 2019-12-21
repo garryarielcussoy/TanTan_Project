@@ -16,6 +16,7 @@ def db_reset():
     password_1 = hashlib.md5("password1".encode()).hexdigest()
     client = Client('name1', 'username1', password_1)
     db.session.add(client)
+    deb.session.commit()
 
 def call_client(request):
     client = app.test_client()

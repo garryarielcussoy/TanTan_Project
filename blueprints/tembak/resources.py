@@ -14,7 +14,7 @@ class Conversation(Resource):
     zomato_host = 'https://developers.zomato.com/api/v2.1/search'
     zomato_api_key = '652b214e65c6d08ddcd5246fd4f8fd2d'
     meetup_host = 'https://api.meetup.com/find/locations'
-    horroscope_host = '	http://ohmanda.com/api/horoscope/'
+    horroscope_host = 'http://ohmanda.com/api/horoscope/'
     translate_host = 'https://translate.yandex.net/api/v1.5/tr/translate'
     simisimi_host = 'https://wsapi.simsimi.com/190410/talk'
 
@@ -57,10 +57,9 @@ class Conversation(Resource):
         elif month == 11:
             astro_sign = 'Scorpio' if (day < 22) else 'Sagittarius'
 
-        hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
-        hor_result_json = hor_result.json()
-
         if re.search(r"[Bb][Ii]*[Nn]+[Gg]+[Uu]*[Nn]+[Gg]+", args['text']):
+            hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
+            hor_result_json = hor_result.json()
             args['text'] = hor_result_json['horoscope']
 
             # Translate the Text
@@ -69,6 +68,8 @@ class Conversation(Resource):
             args['text'] = trans_result['text']
 
         if re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
+            hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
+            hor_result_json = hor_result.json()
             args['text'] = hor_result_json['horoscope']
 
             # Translate the Text
