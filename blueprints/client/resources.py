@@ -46,6 +46,7 @@ class ClientResource(Resource):
                 parser.add_argument('name', location='args', required=True)
                 parser.add_argument('username', location='args', required=True)
                 parser.add_argument('password', location='args', required=True)
+                parser.add_argument('date_birth', location='args', required=True)
                 args = parser.parse_args()
                 client = marshal(client, Client.client_fields)
 
@@ -57,6 +58,7 @@ class ClientResource(Resource):
                     client['name'] = args['name']
                     client['username'] = args['username']
                     client['password'] = password_digest
+                    client['date_birth'] = args['date_birth']
                     db.session.commit()
                     app.logger.debug('DEBUG : %s', client)
                     return client, 200, {'Content-Type':'application/json'}
@@ -102,6 +104,7 @@ class ClientList(Resource):
         parser.add_argument('name', location='args', required=True)
         parser.add_argument('username', location='args', required=True)
         parser.add_argument('password', location='args', required=True)
+        parser.add_argument('date_birth', location='args', required=True)
         args = parser.parse_args()
 
         # Validating the password policy
@@ -110,7 +113,7 @@ class ClientList(Resource):
         if validation == []:
             password_digest = hashlib.md5(args['password'].encode()).hexdigest()
             # Creating object
-            client = Client(args['name'], args['username'], password_digest)
+            client = Client(args['name'], args['username'], password_digest, args['date_birth'])
             db.session.add(client)
             db.session.commit()
 
