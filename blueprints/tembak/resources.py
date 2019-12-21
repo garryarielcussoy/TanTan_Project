@@ -82,7 +82,7 @@ class Conversation(Resource):
                 "Pesan dari TanTan": args['text']
             }, 200
 
-        elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+        elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]*[Kk][Aa]*[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip
             rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
             rq_json = rq.json()
@@ -102,7 +102,7 @@ class Conversation(Resource):
                     "Jam Buka": restaurant['restaurant']['timings'],
                     "Rating": restaurant['restaurant']['user_rating']['aggregate_rating']
                 }
-            restaurant_list.append(detail_info)
+                restaurant_list.append(detail_info)
             return {
                 "Pesan dari TanTan": "Laper? Nih TanTan kasi {} restaurant terdekat".format(len(restaurant_list)),
                 "Daftar Restaurant Terdekat:" : restaurant_list,
