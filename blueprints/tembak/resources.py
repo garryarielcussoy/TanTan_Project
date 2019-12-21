@@ -22,7 +22,7 @@ class Conversation(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('ip', location='args', default=None, required = True)
         parser.add_argument('date_birth', location='args', )
-        parser.add_argument('text', location='json', default=None, required = True)
+        parser.add_argument('text', location='args', default=None, required = True)
         args = parser.parse_args()
 
         # Checking horroscope

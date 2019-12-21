@@ -4,7 +4,6 @@ from flask import Flask, request
 from blueprints import app, db
 from blueprints.client.model import Client
 from app import cache
-
 # Password Encription
 from password_strength import PasswordPolicy
 import hashlib
@@ -14,7 +13,7 @@ def db_reset():
     db.create_all()
 
     password_1 = hashlib.md5("password1".encode()).hexdigest()
-    client = Client('name1', 'username1', password_1)
+    client = Client('name1', 'username1', password_1,'01-01-1991')
     db.session.add(client)
 
 def call_client(request):
