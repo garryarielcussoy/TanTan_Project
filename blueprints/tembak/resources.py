@@ -2,7 +2,7 @@ import requests
 import re
 from flask import Blueprint
 from flask_restful import Api, reqparse, Resource, marshal
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints.client.model import Client
 
 bp_tembak = Blueprint('tembak', __name__)
@@ -16,47 +16,51 @@ class Conversation(Resource):
     meetup_host = 'https://api.meetup.com/find/locations'
     horroscope_host = '	http://ohmanda.com/api/horoscope/'
     translate_host = 'https://translate.yandex.net/api/v1.5/tr/translate'
+    simisimi_host = 'https://wsapi.simsimi.com/190410/talk'
 
-    # @jwt_required
+    @jwt_required
     def get(self):
+        claims = get_jwt_claims()
+        client_target = Client.query.filter_by(username = claims['username']).first()
+        args = marshal(client_target, Client.client_fields)
         parser = reqparse.RequestParser()
-        parser.add_argument('ip', location='args', default=None, required = True)
-        parser.add_argument('date_birth', location='args', )
-        parser.add_argument('text', location='json', default=None, required = True)
-        args = parser.parse_args()
+        parser.add_argument('text', location='args', default=None, required = True)
+        args_result = parser.parse_args()
+        args['text'] = args_result['text']
 
         # Checking horroscope
-        if re.search(r"[Bb][Ii]*[Nn]+[Gg]+[Uu]*[Nn]+[Gg]+", args['text']):
-            day = int(args['date_birth'][0:2])
-            month = int(args['date_birth'][3:5])
-            
-            if month == 12:
-                astro_sign = 'Sagittarius' if (day < 22) else 'Capricorn'
-            elif month == 1:
-                astro_sign = 'Capricorn' if (day < 20) else 'Aquarius'
-            elif month == 2:
-                astro_sign = 'Aquarius' if (day < 19) else 'Pisces'
-            elif month == 3:
-                astro_sign = 'Pisces' if (day < 21) else 'Aries'
-            elif month == 4:
-                astro_sign = 'Aries' if (day < 20) else 'Taurus'
-            elif month == 5:
-                astro_sign = 'Taurus' if (day < 21) else 'Gemini'
-            elif month == 6:
-                astro_sign = 'Gemini' if (day < 21) else 'Cancer'
-            elif month == 7:
-                astro_sign = 'Cancer' if (day < 23) else 'Leo'
-            elif month == 8:
-                astro_sign = 'Leo' if (day < 23) else 'Virgo'
-            elif month == 9:
-                astro_sign = 'Virgo' if (day < 23) else 'Libra'
-            elif month == 10:
-                astro_sign = 'Libra' if (day < 23) else 'Scorpio'
-            elif month == 11:
-                astro_sign = 'Scorpio' if (day < 22) else 'Sagittarius'
+        day = int(args['date_birth'][0:2])
+        month = int(args['date_birth'][3:5])
+        
+        if month == 12:
+            astro_sign = 'Sagittarius' if (day < 22) else 'Capricorn'
+        elif month == 1:
+            astro_sign = 'Capricorn' if (day < 20) else 'Aquarius'
+        elif month == 2:
+            astro_sign = 'Aquarius' if (day < 19) else 'Pisces'
+        elif month == 3:
+            astro_sign = 'Pisces' if (day < 21) else 'Aries'
+        elif month == 4:
+            astro_sign = 'Aries' if (day < 20) else 'Taurus'
+        elif month == 5:
+            astro_sign = 'Taurus' if (day < 21) else 'Gemini'
+        elif month == 6:
+            astro_sign = 'Gemini' if (day < 21) else 'Cancer'
+        elif month == 7:
+            astro_sign = 'Cancer' if (day < 23) else 'Leo'
+        elif month == 8:
+            astro_sign = 'Leo' if (day < 23) else 'Virgo'
+        elif month == 9:
+            astro_sign = 'Virgo' if (day < 23) else 'Libra'
+        elif month == 10:
+            astro_sign = 'Libra' if (day < 23) else 'Scorpio'
+        elif month == 11:
+            astro_sign = 'Scorpio' if (day < 22) else 'Sagittarius'
 
-            hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
-            hor_result_json = hor_result.json()
+        hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
+        hor_result_json = hor_result.json()
+
+        if re.search(r"[Bb][Ii]*[Nn]+[Gg]+[Uu]*[Nn]+[Gg]+", args['text']):
             args['text'] = hor_result_json['horoscope']
 
             # Translate the Text
@@ -64,7 +68,18 @@ class Conversation(Resource):
             trans_result = marshal(trans_result, Client.translate_fields)
             args['text'] = trans_result['text']
 
-        if re.search(r"[Ll]+[Aa]*[Pp]+[Ee]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+        if re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
+            args['text'] = hor_result_json['horoscope']
+
+            # Translate the Text
+            trans_result = requests.get(self.translate_host, params={"key":"trnsl.1.1.20191221T044400Z.e189b861b5121f06.17c821d1d518276b6818ff66b3ea38beaf4b5b59", "text":args['text'], "lang": "id"})
+            trans_result = marshal(trans_result, Client.translate_fields)
+            args['text'] = trans_result['text']
+            return {
+                "Pesan dari TanTan": args['text']
+            }, 200
+
+        elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip
             rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
             rq_json = rq.json()
@@ -104,6 +119,17 @@ class Conversation(Resource):
             }, 200
 
         else:
-            return {'Pesan dari TanTan': "TanTan gangerti kamu ngomong apa :("}, 200
+            headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+            }
+            your_text = {
+                "utext": args['text'],
+                "lang": "id"
+            }
+            rq = requests.post(self.simisimi_host, params=your_text, headers=headers)
+            rq_json = rq.json()
+            reply = rq_json['atext']
+            return {"Pesan dari TanTan": reply}, 200
 
 api.add_resource(Conversation, '')
