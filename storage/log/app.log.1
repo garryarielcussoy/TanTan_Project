@@ -1,0 +1,84 @@
+[2019-12-21 12:52:31,066] {/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py:1891} ERROR Exception on /tembak [GET]
+Traceback (most recent call last):
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/TanTan/blueprints/tembak/resources.py", line 59, in get
+    args['text'] = hor_result_json['horroscope']
+KeyError: 'horroscope'
+[2019-12-21 12:52:31,073] {/home/alta8/Alterra_Academy/TanTan/blueprints/__init__.py:73} ERROR REQUEST_LOG	{"status_code": 500, "method": "GET", "code": "500 INTERNAL SERVER ERROR", "url": "/tembak?ip=120.188.37.192&date_birth=03-05-1996", "request": {"text": "Tan bingung"}, "response": {"message": "Internal Server Error"}}
+[2019-12-21 12:53:03,486] {/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py:1891} ERROR Exception on /tembak [GET]
+Traceback (most recent call last):
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/TanTan/blueprints/tembak/resources.py", line 62, in get
+    trans_result = requests.get(self.translate_host, args={"key":"trnsl.1.1.20191221T044400Z.e189b861b5121f06.17c821d1d518276b6818ff66b3ea38beaf4b5b59", "text":args['text'], "lang": "id"})
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/requests/api.py", line 75, in get
+    return request('get', url, params=params, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/requests/api.py", line 60, in request
+    return session.request(method=method, url=url, **kwargs)
+TypeError: request() got an unexpected keyword argument 'args'
+[2019-12-21 12:53:03,492] {/home/alta8/Alterra_Academy/TanTan/blueprints/__init__.py:73} ERROR REQUEST_LOG	{"status_code": 500, "method": "GET", "code": "500 INTERNAL SERVER ERROR", "url": "/tembak?ip=120.188.37.192&date_birth=03-05-1996", "request": {"text": "Tan bingung"}, "response": {"message": "Internal Server Error"}}
+[2019-12-21 12:55:19,225] {/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py:1891} ERROR Exception on /tembak [GET]
+Traceback (most recent call last):
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/TanTan/blueprints/tembak/resources.py", line 63, in get
+    args['text'] = trans_result.json()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/requests/models.py", line 897, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/lib/python3.6/json/__init__.py", line 354, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.6/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.6/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[2019-12-21 12:55:19,230] {/home/alta8/Alterra_Academy/TanTan/blueprints/__init__.py:73} ERROR REQUEST_LOG	{"status_code": 500, "method": "GET", "code": "500 INTERNAL SERVER ERROR", "url": "/tembak?ip=120.188.37.192&date_birth=03-05-1996", "request": {"text": "Tan bingung"}, "response": {"message": "Internal Server Error"}}
+[2019-12-21 12:56:32,664] {/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py:1891} ERROR Exception on /tembak [GET]
+Traceback (most recent call last):
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1949, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/app.py", line 1935, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask/views.py", line 89, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alta8/Alterra_Academy/TanTan/blueprints/tembak/resources.py", line 64, in get
+    args['text'] = trans_result.json()
+  File "/home/alta8/Alterra_Academy/2019 - 12 - 16 (Minggu 5 - Senin)/Flask_Challenge_2/my_env/lib/python3.6/site-packages/requests/models.py", line 897, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/lib/python3.6/json/__init__.py", line 354, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.6/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.6/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[2019-12-21 12:56:32,666] {/home/alta8/Alterra_Academy/TanTan/blueprints/__init__.py:73} ERROR REQUEST_LOG	{"status_code": 500, "method": "GET", "code": "500 INTERNAL SERVER ERROR", "url": "/tembak?ip=120.188.37.192&date_birth=03-05-1996", "request": {"text": "Tan bingung"}, "response": {"message": "Internal Server Error"}}
