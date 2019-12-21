@@ -28,10 +28,11 @@ class Client(db.Model):
         'username': fields.String,
     }
 
-    def __init__(self, name, username, password):
+    def __init__(self, name, username, password, date_birth):
         self.name = name
         self.username = username
         self.password = password
+        self.date_birth = date_birth
 
     def __repr__(self):
         return '<Client %r>' % self.id
