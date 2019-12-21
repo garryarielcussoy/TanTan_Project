@@ -31,7 +31,7 @@ class Conversation(Resource):
         # Checking horroscope
         day = int(args['date_birth'][0:2])
         month = int(args['date_birth'][3:5])
-        
+        #tes
         if month == 12:
             astro_sign = 'Sagittarius' if (day < 22) else 'Capricorn'
         elif month == 1:
