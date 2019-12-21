@@ -23,9 +23,11 @@ class Conversation(Resource):
         claims = get_jwt_claims()
         client_target = Client.query.filter_by(username = claims['username']).first()
         args = marshal(client_target, Client.client_fields)
+
         parser = reqparse.RequestParser()
         parser.add_argument('text', location='args', default=None, required = True)
         args_result = parser.parse_args()
+
         args['text'] = args_result['text']
 
         # Checking horroscope

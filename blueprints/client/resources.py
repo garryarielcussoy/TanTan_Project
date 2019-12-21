@@ -47,6 +47,7 @@ class ClientResource(Resource):
                 parser.add_argument('username', location='args', required=True)
                 parser.add_argument('password', location='args', required=True)
                 parser.add_argument('date_birth', location='args', required=True)
+                parser.add_argument('ip', location='args', required=True)
                 args = parser.parse_args()
                 client = marshal(client, Client.client_fields)
 
@@ -59,6 +60,7 @@ class ClientResource(Resource):
                     client['username'] = args['username']
                     client['password'] = password_digest
                     client['date_birth'] = args['date_birth']
+                    client['ip'] = args['ip']
                     db.session.commit()
                     app.logger.debug('DEBUG : %s', client)
                     return client, 200, {'Content-Type':'application/json'}

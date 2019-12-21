@@ -4,7 +4,6 @@ from flask import Flask, request
 from blueprints import app, db
 from blueprints.client.model import Client
 from app import cache
-
 # Password Encription
 from password_strength import PasswordPolicy
 import hashlib
@@ -13,10 +12,10 @@ def db_reset():
     db.drop_all()
     db.create_all()
 
-    password_1 = hashlib.md5("password1".encode()).hexdigest()
-    client = Client('name1', 'username1', password_1)
+    password_1 = hashlib.md5("passuser01".encode()).hexdigest()
+    client = Client('user 01', 'user01', password_1,'03-11-1996','120.188.37.192')
     db.session.add(client)
-    deb.session.commit()
+    db.session.commit()
 
 def call_client(request):
     client = app.test_client()
@@ -37,8 +36,8 @@ def create_token(isInternal):
     else:
         cachename = "test-non-internal-token"
         data = {
-            'username': 'client1',
-            'password': 'password1'
+            'username': 'user01',
+            'password': 'passuser01'
         }
 
     token = cache.get(cachename)
