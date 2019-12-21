@@ -105,6 +105,7 @@ class ClientList(Resource):
         parser.add_argument('username', location='args', required=True)
         parser.add_argument('password', location='args', required=True)
         parser.add_argument('date_birth', location='args', required=True)
+        parser.add_argument('ip', location='args', required=True)
         args = parser.parse_args()
 
         # Validating the password policy
@@ -113,7 +114,7 @@ class ClientList(Resource):
         if validation == []:
             password_digest = hashlib.md5(args['password'].encode()).hexdigest()
             # Creating object
-            client = Client(args['name'], args['username'], password_digest, args['date_birth'])
+            client = Client(args['name'], args['username'], password_digest, args['date_birth'], args['ip'])
             db.session.add(client)
             db.session.commit()
 
