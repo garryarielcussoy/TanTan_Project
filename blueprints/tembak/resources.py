@@ -31,7 +31,7 @@ class Conversation(Resource):
         # Checking horroscope
         day = int(args['date_birth'][0:2])
         month = int(args['date_birth'][3:5])
-
+        
         if month == 12:
             astro_sign = 'Sagittarius' if (day < 22) else 'Capricorn'
         elif month == 1:
@@ -85,7 +85,6 @@ class Conversation(Resource):
             rq_json = rq.json()
             lat = rq_json['latitude']
             lon = rq_json['longitude']
-            print(lat," halo ", lon)
 
             # Step - 2 - Get nearby restaurant
             rq = requests.get(self.zomato_host, headers={'user-key': self.zomato_api_key}, params={'lat': lat, 'lon':lon, 'radius': 100000, 'count': 5})
@@ -100,9 +99,20 @@ class Conversation(Resource):
                     "Jam Buka": restaurant['restaurant']['timings'],
                     "Rating": restaurant['restaurant']['user_rating']['aggregate_rating']
                 }
-                restaurant_list.append(detail_info)
+            restaurant_list.append(detail_info)
+            return {
+                "Pesan dari TanTan": "Laper? Nih TanTan kasi {} restaurant terdekat".format(len(restaurant_list)),
+                "Daftar Restaurant Terdekat:" : restaurant_list,
+            }, 200
 
-            # Step - 3 - Finding nearby friends
+        elif re.search(r"[Ss]endiri([a]*n)?", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+            # Step - 1 - Check lon lat from ip
+            rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
+            rq_json = rq.json()
+            lat = rq_json['latitude']
+            lon = rq_json['longitude']
+
+            # Step - 2 - Finding nearby friends
             nearby_friends = requests.get(self.meetup_host, params={"lat": lat, "lon": lon})
             nearby_friends = nearby_friends.json()
 
@@ -112,9 +122,7 @@ class Conversation(Resource):
                 n = len(nearby_friends)
 
             return {
-                "Pesan dari TanTan": "Laper? Nih TanTan kasi {} restaurant terdekat".format(len(restaurant_list)),
-                "Daftar Restaurant Terdekat:" : restaurant_list,
-                "Pesan dari TanTan - 2": "Makannya jangan sendirian ya mblo. Ada {} orang nih dideketmu yang mungkin bisa diajak makan hehe :3".format(n),
+                "Pesan dari TanTan": "Jangan sendirian ya mblo. Ada {} orang nih dideketmu yang mungkin bisa diajak ngedate hehe :3".format(n),
                 "Daftar Teman yang Bisa Diajak" : nearby_friends[0:n]
             }, 200
 
