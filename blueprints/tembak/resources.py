@@ -1,5 +1,6 @@
 import requests
 import re
+import os
 from flask import Blueprint
 from flask_restful import Api, reqparse, Resource, marshal
 from flask_jwt_extended import jwt_required, get_jwt_claims
@@ -17,9 +18,14 @@ class Conversation(Resource):
     horroscope_host = 'http://ohmanda.com/api/horoscope/'
     translate_host = 'https://translate.yandex.net/api/v1.5/tr/translate'
     simisimi_host = 'https://wsapi.simsimi.com/190410/talk'
+    anime_host = 'https://kitsu.io/api/edge/anime'
 
     @jwt_required
     def get(self):
+        # Set Environment
+        if 'ANIME' not in os.environ:
+            os.environ['ANIME'] = '0' 
+        
         claims = get_jwt_claims()
         client_target = Client.query.filter_by(username = claims['username']).first()
         args = marshal(client_target, Client.client_fields)
@@ -69,7 +75,12 @@ class Conversation(Resource):
             trans_result = marshal(trans_result, Client.translate_fields)
             args['text'] = trans_result['text']
 
-        if re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
+        if re.search(r"[Aa]nime*", args['text']):
+            first_message = 'Mau nonton anime apa?'
+            os.environ['ANIME'] = '1'
+            return {'Pesan dari TanTan': first_message}, 200
+
+        elif re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
             hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
             hor_result_json = hor_result.json()
             args['text'] = hor_result_json['horoscope']
@@ -107,6 +118,21 @@ class Conversation(Resource):
                 "Pesan dari TanTan": "Laper? Nih TanTan kasi {} restaurant terdekat".format(len(restaurant_list)),
                 "Daftar Restaurant Terdekat:" : restaurant_list,
             }, 200
+
+        elif os.environ['ANIME'] == '1':
+            os.environ['ANIME'] = '0'
+            anime_result = requests.get(self.anime_host, params={"filter[text]": args['text']})
+            anime_result_json = anime_result.json()
+            anime_title = anime_result_json["data"][0]["attributes"]["titles"]
+            anime_link = anime_result_json["data"][0]["links"]["self"]
+            anime_id = anime_result_json["data"][0]["id"]
+            anime_url = anime_result_json["data"][0]["attributes"]["posterImage"]["small"][-10:]
+            # image = requests.get("https://media.kitsu.io/anime/poster_images/" + anime_id + "/small.jpg?")
+            show_anime = {
+                "Judul": anime_title,
+                "Link": anime_link,
+            }
+            return {"Pesan dari TanTan:": show_anime}, 200
 
         elif re.search(r"[Ss]endiri([a]*n)?", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip

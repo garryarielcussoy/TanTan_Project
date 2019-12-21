@@ -48,15 +48,6 @@ class TestMockingTanTan():
         token = create_token(False)
         res = client.get('/tembak', headers={'Authorization': 'Bearer ' + token}, query_string={"text": "TanTan lapeeeer"})
         
-        # # Get IP Location
-        # res = client.get('https://api.ipgeolocation.io/ipgeo', params={'ip': args['ip'], 'apiKey':'49794d165c0541438235dd9544a7922a'})
-        # res_json = json.loads(res.data)
-        # assert res.status_code == 200
-        # assert res_json['latitude'] == "-6.21462"
-        # assert res_json['longitude'] == "106.84513"
-
-        # Get Nearby Restaurant
-        # res = client.get(, params={}, headers={'user-key': '652b214e65c6d08ddcd5246fd4f8fd2d'})
         res_json = json.loads(res.data)
         assert res.status_code == 200
         assert res_json['Daftar Restaurant Terdekat:'][0]['Nama Restaurant'] == "Seoul Yummy"
