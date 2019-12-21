@@ -13,8 +13,7 @@ def db_reset():
     db.create_all()
 
     password_1 = hashlib.md5("passuser01".encode()).hexdigest()
-    
-    client = Client('user 01', 'user01', password_1,'03-03-1996','120.188.37.192')
+    client = Client('user 01', 'user01', password_1,'03-11-1996','120.188.37.192')
     db.session.add(client)
     db.session.commit()
 

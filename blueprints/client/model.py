@@ -37,5 +37,5 @@ class Client(db.Model):
         self.date_birth = date_birth
         self.ip = ip
 
-    def __repr__(self):
-        return '<Client %r>' % self.id
+    # def __repr__(self):
+    #     return '<Client %r>' % self.id
