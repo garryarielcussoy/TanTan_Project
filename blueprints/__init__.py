@@ -34,9 +34,9 @@ def internal_required(fn):
 try:
     env = os.environ.get('FLASK_ENV', 'development')
     if env == 'testing':
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:jg46!32B@0.0.0.0:3306/testing'
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/testing'
     else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:jg46!32B@0.0.0.0:3306/rest_training'        
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'        
 except Exception as e:
     raise e
 
@@ -79,7 +79,7 @@ from blueprints.auth.__init__ import bp_auth
 app.register_blueprint(bp_auth, url_prefix='/token')
 from blueprints.client.resources import bp_client
 app.register_blueprint(bp_client, url_prefix = '/client')
-# from blueprints.tembak.resources import bp_tembak
-# app.register_blueprint(bp_tembak, url_prefix = '/tembak')
+from blueprints.tembak.resources import bp_tembak
+app.register_blueprint(bp_tembak, url_prefix = '/tembak')
 
 db.create_all()

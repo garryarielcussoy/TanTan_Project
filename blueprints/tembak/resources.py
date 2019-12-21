@@ -63,8 +63,9 @@ class Conversation(Resource):
             trans_result = requests.get(self.translate_host, params={"key":"trnsl.1.1.20191221T044400Z.e189b861b5121f06.17c821d1d518276b6818ff66b3ea38beaf4b5b59", "text":args['text'], "lang": "id"})
             trans_result = marshal(trans_result, Client.translate_fields)
             args['text'] = trans_result['text']
+            print(args['text'])
 
-        if re.search(r"[Ll]+[Aa]*[Pp]+[Ee]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+        if re.search(r"[Ll]+[Aa]*[Pp]+[Ee]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']) or re.search(r"berdosa", args['text']):
             # Step - 1 - Check lon lat from ip
             rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
             rq_json = rq.json()
