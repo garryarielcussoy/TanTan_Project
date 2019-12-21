@@ -2,7 +2,7 @@ import requests
 import re
 from flask import Blueprint
 from flask_restful import Api, reqparse, Resource, marshal
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from blueprints.client.model import Client
 
 bp_tembak = Blueprint('tembak', __name__)
@@ -16,14 +16,17 @@ class Conversation(Resource):
     meetup_host = 'https://api.meetup.com/find/locations'
     horroscope_host = '	http://ohmanda.com/api/horoscope/'
     translate_host = 'https://translate.yandex.net/api/v1.5/tr/translate'
+    simisimi_host = 'https://wsapi.simsimi.com/190410/talk'
 
-    # @jwt_required
+    @jwt_required
     def get(self):
+        claims = get_jwt_claims()
+        client_target = Client.query.filter_by(username = claims['username']).first()
+        args = marshal(client_target, Client.client_fields)
         parser = reqparse.RequestParser()
-        parser.add_argument('ip', location='args', default=None, required = True)
-        parser.add_argument('date_birth', location='args', )
         parser.add_argument('text', location='args', default=None, required = True)
-        args = parser.parse_args()
+        args_result = parser.parse_args()
+        args['text'] = args_result['text']
 
         # Checking horroscope
         day = int(args['date_birth'][0:2])
@@ -116,6 +119,17 @@ class Conversation(Resource):
             }, 200
 
         else:
-            return {'Pesan dari TanTan': "TanTan gangerti kamu ngomong apa :("}, 200
+            headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+            }
+            your_text = {
+                "utext": args['text'],
+                "lang": "id"
+            }
+            rq = requests.post(self.simisimi_host, params=your_text, headers=headers)
+            rq_json = rq.json()
+            reply = rq_json['atext']
+            return {"Pesan dari TanTan": reply}, 200
 
 api.add_resource(Conversation, '')
