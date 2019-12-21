@@ -12,9 +12,11 @@ def db_reset():
     db.drop_all()
     db.create_all()
 
-    password_1 = hashlib.md5("password1".encode()).hexdigest()
-    client = Client('name1', 'username1', password_1,'01-01-1991')
+    password_1 = hashlib.md5("passuser01".encode()).hexdigest()
+    
+    client = Client('user 01', 'user01', password_1,'03-03-1996','120.188.37.192')
     db.session.add(client)
+    db.session.commit()
 
 def call_client(request):
     client = app.test_client()
@@ -35,8 +37,8 @@ def create_token(isInternal):
     else:
         cachename = "test-non-internal-token"
         data = {
-            'username': 'client1',
-            'password': 'password1'
+            'username': 'user01',
+            'password': 'passuser01'
         }
 
     token = cache.get(cachename)

@@ -31,6 +31,7 @@ class CreateTokenResource(Resource):
             password_digest = hashlib.md5(args['password'].encode()).hexdigest()
             qry = Client.query.filter_by(username = args['username']).filter_by(password = password_digest)
             clientData = qry.first()
+            
         # Non-Interval Client
             if clientData is not None:
                 clientData = marshal(clientData, Client.jwt_claim_fields)
@@ -39,11 +40,11 @@ class CreateTokenResource(Resource):
             return {'status': 'BAD REQUEST', 'message': 'invalid username or password'}, 400
 
     # Show the payload
-    @jwt_required
-    def post(self):
-        verify_jwt_in_request()
-        claims = get_jwt_claims()
-        claims = marshal(claims, Client.jwt_claim_fields)
-        return claims, 200
+    # @jwt_required
+    # def post(self):
+    #     verify_jwt_in_request()
+    #     claims = get_jwt_claims()
+    #     claims = marshal(claims, Client.jwt_claim_fields)
+    #     return claims, 200
         
 api.add_resource(CreateTokenResource, '')

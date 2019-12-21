@@ -9,9 +9,10 @@ class TestClientCrud():
 
         data = {
             'name': 'user 01',
-            'username': 'user01',
+            'username': 'user02',
             'password': 'passuser01',
-            'date_birth': '03-05-1996'
+            'date_birth': '03-05-1996',
+            'ip' : '120.188.37.192'
         }
 
         res = client.post('/client', query_string = data, headers={'Authorization': 'Bearer ' + token})
@@ -29,7 +30,8 @@ class TestClientCrud():
             'name': 'user satu',
             'username': 'usersatu',
             'password': 'passusersatu',
-            'date_birth': '03-05-1996'
+            'date_birth': '03-03-1996',
+            'ip' : '120.188.37.192'
         }
 
         res = client.put('/client/1', query_string = data, headers={'Authorization': 'Bearer ' + token})
