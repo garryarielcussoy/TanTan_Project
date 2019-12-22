@@ -31,14 +31,11 @@ def internal_required(fn):
     return wrapper
 
 # DB Setup
-try:
-    env = os.environ.get('FLASK_ENV', 'development')
-    if env == 'testing':
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/testing'
-    else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'        
-except Exception as e:
-    raise e
+# try:
+env = os.environ.get('FLASK_ENV', 'development')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/testing' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'        
+# except Exception as e:
+#     raise e
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:jg46!32B@localhost:3306/rest_training'      
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
