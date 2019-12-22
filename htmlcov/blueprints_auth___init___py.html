@@ -80,7 +80,7 @@
     <p id="t27" class="run"><span class="n"><a href="#t27">27</a></span><span class="t">            <span class="nam">token</span> <span class="op">=</span> <span class="nam">create_access_token</span><span class="op">(</span><span class="nam">identity</span> <span class="op">=</span> <span class="nam">args</span><span class="op">[</span><span class="str">'username'</span><span class="op">]</span><span class="op">,</span> <span class="nam">user_claims</span><span class="op">=</span><span class="op">{</span><span class="str">'username'</span><span class="op">:</span> <span class="nam">args</span><span class="op">[</span><span class="str">'username'</span><span class="op">]</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t28" class="run"><span class="n"><a href="#t28">28</a></span><span class="t">            <span class="key">return</span> <span class="op">{</span><span class="str">'token'</span><span class="op">:</span> <span class="nam">token</span><span class="op">}</span><span class="op">,</span> <span class="num">200</span>&nbsp;</span><span class="r"></span></p>
     <p id="t29" class="pln"><span class="n"><a href="#t29">29</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p id="t30" class="pln"><span class="n"><a href="#t30">30</a></span><span class="t">        <span class="com"># Non-Interval Client</span>&nbsp;</span><span class="r"></span></p>
+    <p id="t30" class="pln"><span class="n"><a href="#t30">30</a></span><span class="t">        <span class="com"># Non-Internal Client</span>&nbsp;</span><span class="r"></span></p>
     <p id="t31" class="pln"><span class="n"><a href="#t31">31</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p id="t32" class="run"><span class="n"><a href="#t32">32</a></span><span class="t">            <span class="nam">password_digest</span> <span class="op">=</span> <span class="nam">hashlib</span><span class="op">.</span><span class="nam">md5</span><span class="op">(</span><span class="nam">args</span><span class="op">[</span><span class="str">'password'</span><span class="op">]</span><span class="op">.</span><span class="nam">encode</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">.</span><span class="nam">hexdigest</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p id="t33" class="run"><span class="n"><a href="#t33">33</a></span><span class="t">            <span class="nam">qry</span> <span class="op">=</span> <span class="nam">Client</span><span class="op">.</span><span class="nam">query</span><span class="op">.</span><span class="nam">filter_by</span><span class="op">(</span><span class="nam">username</span> <span class="op">=</span> <span class="nam">args</span><span class="op">[</span><span class="str">'username'</span><span class="op">]</span><span class="op">)</span><span class="op">.</span><span class="nam">filter_by</span><span class="op">(</span><span class="nam">password</span> <span class="op">=</span> <span class="nam">password_digest</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -105,11 +105,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v5.0</a>,
-<<<<<<< HEAD
-            created at 2019-12-22 09:01
-=======
-            created at 2019-12-22 12:50
->>>>>>> dd6881ae4fcb4f44dd08a62492c174dc9a387f10
+            created at 2019-12-22 16:08
         </p>
     </div>
 </div>

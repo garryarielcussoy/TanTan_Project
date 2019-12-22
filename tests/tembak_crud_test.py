@@ -2,7 +2,7 @@ import json
 from . import app, client, cache, create_token, db_reset
 
 class TestClientCrud():
-    def test_tembak_get_valid(self, client):
+    def test_tembak_get_valid_lapar(self, client):
         db_reset()
         token = create_token(False)
 
@@ -14,18 +14,8 @@ class TestClientCrud():
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
-    def test_tembak_get_valid(self, client):
-        db_reset()
-        token = create_token(False)
-        data = {
-            'text': 'aku bingung'
-        }
 
-        res = client.get('/tembak', query_string = data, headers={'Authorization': 'Bearer ' + token})
-        res_json = json.loads(res.data)
-
-        assert res.status_code == 200
-    def test_tembak_get_valid(self, client):
+    def test_tembak_get_valid_horoskop(self, client):
         db_reset()
         token = create_token(False)
 
@@ -38,7 +28,7 @@ class TestClientCrud():
 
         assert res.status_code == 200
     
-    def test_tembak_get_valid(self, client):
+    def test_tembak_get_valid_makan(self, client):
         db_reset()
         token = create_token(False)
 
@@ -50,4 +40,3 @@ class TestClientCrud():
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
-    

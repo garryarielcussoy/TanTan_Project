@@ -134,10 +134,7 @@ class Conversation(Resource):
             nearby_friends = requests.get(self.meetup_host, params={"lat": lat, "lon": lon})
             nearby_friends = nearby_friends.json()
 
-            if len(nearby_friends) >= 3:
-                n = 3
-            else:
-                n = len(nearby_friends)
+            n = len(nearby_friends)
 
             return {
                 "Pesan dari TanTan": "Jangan sendirian ya mblo. Ada {} orang nih dideketmu yang mungkin bisa diajak ngedate hehe :3".format(n),
@@ -147,7 +144,10 @@ class Conversation(Resource):
         else:
             headers = {
                 'Content-Type': 'application/json',
-                'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+                # 'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+                # 'x-api-key': 'd9OQolw9uHQkKYevStyJElPyBjSkEiMW4H2Sn6hj'
+                # 'x-api-key': 'biW4XAMCgRDyQhwJF5924id9z2xcmSj7l18unn'
+                'x-api-key': 'R8VAfoLvApo4zUrUyWQ8/0umLAhE3d79g88q8sPc'
             }
             your_text = {
                 "utext": args['text'],

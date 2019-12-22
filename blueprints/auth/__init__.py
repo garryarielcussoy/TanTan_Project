@@ -27,7 +27,7 @@ class CreateTokenResource(Resource):
             token = create_access_token(identity = args['username'], user_claims={'username': args['username']})
             return {'token': token}, 200
 
-        # Non-Interval Client
+        # Non-Internal Client
         else:
             password_digest = hashlib.md5(args['password'].encode()).hexdigest()
             qry = Client.query.filter_by(username = args['username']).filter_by(password = password_digest)

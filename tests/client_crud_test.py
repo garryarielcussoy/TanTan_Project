@@ -21,6 +21,22 @@ class TestClientCrud():
 
         assert res.status_code == 200
         assert res_json['id'] > 0
+    
+    def test_client_post_invalid(self, client):
+        token = create_token(False)
+
+        data = {
+            'name': 'user 01',
+            'username': 'user02',
+            'password': 'passuser01',
+            'date_birth': '03-05-1996',
+            'ip' : '120.188.37.192'
+        }
+
+        res = client.post('/client', query_string = data, headers={'Authorization': 'Bearer ' + token})
+        res_json = json.loads(res.data)
+
+        assert res.status_code == 403
 
 # Test Case Put 
     def test_client_put_valid(self, client):
@@ -108,7 +124,7 @@ class TestClientCrud():
 # Test Case Get All 
     def test_client_get_all_valid(self, client):
         
-        token = create_token(False)
+        token = create_token(True)
 
         res = client.get('/client', headers={'Authorization': 'Bearer ' + token})
         res_json = json.loads(res.data)
@@ -184,4 +200,3 @@ class TestClientCrud():
         res_json = json.loads(res.data)
 
         assert res.status_code == 404
-
