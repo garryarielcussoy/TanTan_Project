@@ -65,16 +65,6 @@ class Conversation(Resource):
         elif month == 11:
             astro_sign = 'Scorpio' if (day < 22) else 'Sagittarius'
 
-        if re.search(r"[Bb][Ii]*[Nn]+[Gg]+[Uu]*[Nn]+[Gg]+", args['text']):
-            hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
-            hor_result_json = hor_result.json()
-            args['text'] = hor_result_json['horoscope']
-
-            # Translate the Text
-            trans_result = requests.get(self.translate_host, params={"key":"trnsl.1.1.20191221T044400Z.e189b861b5121f06.17c821d1d518276b6818ff66b3ea38beaf4b5b59", "text":args['text'], "lang": "id"})
-            trans_result = marshal(trans_result, Client.translate_fields)
-            args['text'] = trans_result['text']
-
         if re.search(r"[Aa]nime*", args['text']):
             first_message = 'Mau nonton anime apa?'
             os.environ['ANIME'] = '1'
@@ -90,9 +80,8 @@ class Conversation(Resource):
             trans_result = marshal(trans_result, Client.translate_fields)
             args['text'] = trans_result['text']
             return {
-                "Pesan dari TanTan": args['text']
+                "Pesan dari TanTan": args['text'][82:-22]
             }, 200
-
         elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]*[Kk][Aa]*[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip
             rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
