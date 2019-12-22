@@ -85,3 +85,16 @@ class TestClientCrud():
 
         assert res.status_code == 200
 
+    def test_client_get_all_valid(self, client):
+        
+        token = create_token(False)
+
+        data = {
+            'p':1,
+            'rp':2
+        }
+
+        res = client.get('/client', query_string = data, headers={'Authorization': 'Bearer ' + token})
+        res_json = json.loads(res.data)
+
+        assert res.status_code == 200

@@ -126,4 +126,8 @@ class ClientList(Resource):
         return {'status': 'invalid username or password'}
 
 api.add_resource(ClientList, '')
+
+
+
+
 api.add_resource(ClientResource, '/<id>')
