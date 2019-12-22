@@ -1,5 +1,8 @@
 import requests
 import re
+from io import BytesIO
+from PIL import Image, ImageDraw
+import os
 from flask import Blueprint
 from flask_restful import Api, reqparse, Resource, marshal
 from flask_jwt_extended import jwt_required, get_jwt_claims
@@ -14,18 +17,27 @@ class Conversation(Resource):
     zomato_host = 'https://developers.zomato.com/api/v2.1/search'
     zomato_api_key = '652b214e65c6d08ddcd5246fd4f8fd2d'
     meetup_host = 'https://api.meetup.com/find/locations'
-    horroscope_host = '	http://ohmanda.com/api/horoscope/'
+    horroscope_host = 'http://ohmanda.com/api/horoscope/'
     translate_host = 'https://translate.yandex.net/api/v1.5/tr/translate'
     simisimi_host = 'https://wsapi.simsimi.com/190410/talk'
+    anime_host = 'https://kitsu.io/api/edge/anime'
 
     @jwt_required
     def get(self):
+        # Set Environment
+        if 'ANIME' not in os.environ:
+            os.environ['ANIME'] = '0'
+
+        if 'FLASK_ENV' not in os.environ: os.environ['FLASK_ENV'] = 'development' 
+        
         claims = get_jwt_claims()
         client_target = Client.query.filter_by(username = claims['username']).first()
         args = marshal(client_target, Client.client_fields)
+
         parser = reqparse.RequestParser()
         parser.add_argument('text', location='args', default=None, required = True)
         args_result = parser.parse_args()
+
         args['text'] = args_result['text']
 
         # Checking horroscope
@@ -57,18 +69,14 @@ class Conversation(Resource):
         elif month == 11:
             astro_sign = 'Scorpio' if (day < 22) else 'Sagittarius'
 
-        hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
-        hor_result_json = hor_result.json()
+        if re.search(r"[Aa]nime*", args['text']):
+            first_message = 'Mau nonton anime apa?'
+            os.environ['ANIME'] = '1'
+            return {'Pesan dari TanTan': first_message}, 200
 
-        if re.search(r"[Bb][Ii]*[Nn]+[Gg]+[Uu]*[Nn]+[Gg]+", args['text']):
-            args['text'] = hor_result_json['horoscope']
-
-            # Translate the Text
-            trans_result = requests.get(self.translate_host, params={"key":"trnsl.1.1.20191221T044400Z.e189b861b5121f06.17c821d1d518276b6818ff66b3ea38beaf4b5b59", "text":args['text'], "lang": "id"})
-            trans_result = marshal(trans_result, Client.translate_fields)
-            args['text'] = trans_result['text']
-
-        if re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
+        elif re.search(r"[Hh][Oo]*[Rr][Oo]*[Ss]+[Kk][Oo]*[Pp]", args['text']):
+            hor_result =  requests.get(self.horroscope_host + astro_sign.lower())
+            hor_result_json = hor_result.json()
             args['text'] = hor_result_json['horoscope']
 
             # Translate the Text
@@ -76,16 +84,14 @@ class Conversation(Resource):
             trans_result = marshal(trans_result, Client.translate_fields)
             args['text'] = trans_result['text']
             return {
-                "Pesan dari TanTan": args['text']
+                "Pesan dari TanTan": args['text'][82:-22]
             }, 200
-
-        elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+        elif re.search(r"[Ll]+[Aa]*[Pp]+[AaEe]*[Rr]+", args['text']) or re.search(r"[Mm][Aa]*[Kk][Aa]*[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip
             rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
             rq_json = rq.json()
             lat = rq_json['latitude']
             lon = rq_json['longitude']
-            print(lat," halo ", lon)
 
             # Step - 2 - Get nearby restaurant
             rq = requests.get(self.zomato_host, headers={'user-key': self.zomato_api_key}, params={'lat': lat, 'lon':lon, 'radius': 100000, 'count': 5})
@@ -101,27 +107,55 @@ class Conversation(Resource):
                     "Rating": restaurant['restaurant']['user_rating']['aggregate_rating']
                 }
                 restaurant_list.append(detail_info)
-
-            # Step - 3 - Finding nearby friends
-            nearby_friends = requests.get(self.meetup_host, params={"lat": lat, "lon": lon})
-            nearby_friends = nearby_friends.json()
-
-            if len(nearby_friends) >= 3:
-                n = 3
-            else:
-                n = len(nearby_friends)
-
             return {
                 "Pesan dari TanTan": "Laper? Nih TanTan kasi {} restaurant terdekat".format(len(restaurant_list)),
                 "Daftar Restaurant Terdekat:" : restaurant_list,
-                "Pesan dari TanTan - 2": "Makannya jangan sendirian ya mblo. Ada {} orang nih dideketmu yang mungkin bisa diajak makan hehe :3".format(n),
+            }, 200
+
+        elif os.environ['ANIME'] == '1':
+            os.environ['ANIME'] = '0'
+            anime_result = requests.get(self.anime_host, params={"filter[text]": args['text']})
+            anime_result_json = anime_result.json()
+            anime_title = anime_result_json["data"][0]["attributes"]["titles"]
+            anime_link = anime_result_json["data"][0]["links"]["self"]
+            anime_id = anime_result_json["data"][0]["id"]
+            anime_url = anime_result_json["data"][0]["attributes"]["posterImage"]["small"][-10:]
+            image_anime = requests.get("https://media.kitsu.io/anime/poster_images/" + anime_id + "/small.jpg")
+            show_anime = {
+                "Judul": anime_title,
+                "Link": anime_link,
+            }
+            if os.environ['FLASK_ENV'] == 'development': image_open = Image.open(BytesIO(image_anime.content)).show()
+                # image_open.show()
+            return show_anime, 200
+
+        elif re.search(r"[Ss]endiri([a]*n)?", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
+            # Step - 1 - Check lon lat from ip
+            rq = requests.get(self.geo_location + '/ipgeo', params={'ip': args['ip'], 'apiKey': self.geo_location_api_key})
+            rq_json = rq.json()
+            lat = rq_json['latitude']
+            lon = rq_json['longitude']
+
+            # Step - 2 - Finding nearby friends
+            nearby_friends = requests.get(self.meetup_host, params={"lat": lat, "lon": lon})
+            nearby_friends = nearby_friends.json()
+
+            n = len(nearby_friends)
+
+            return {
+                "Pesan dari TanTan": "Jangan sendirian ya mblo. Ada {} orang nih dideketmu yang mungkin bisa diajak ngedate hehe :3".format(n),
                 "Daftar Teman yang Bisa Diajak" : nearby_friends[0:n]
             }, 200
 
         else:
             headers = {
                 'Content-Type': 'application/json',
-                'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+                # 'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
+                # 'x-api-key': 'd9OQolw9uHQkKYevStyJElPyBjSkEiMW4H2Sn6hj'
+                # 'x-api-key': 'biW4XAMCgRDyQhwJF5924id9z2xcmSj7l18unn'
+                # 'x-api-key': 'R8VAfoLvApo4zUrUyWQ8/0umLAhE3d79g88q8sPc'
+                # 'x-api_key': 'yxr2q7KOFbefdMrAxUcKLn9uzr/K6YNVCCbEQCiF'
+                'x-api-key': 'FLd2Sirf0WJ3pkwB4OHhWCoynYyO4loSAV8JVXBe'
             }
             your_text = {
                 "utext": args['text'],

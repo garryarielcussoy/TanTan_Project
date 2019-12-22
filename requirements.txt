@@ -1,5 +1,5 @@
 flask
-flask-restful
+flask_restful
 flask-sqlalchemy
 pymysql
 flask-migrate
@@ -10,3 +10,4 @@ requests
 pytest
 python-dotenv
 pytest-cov
+pillow
