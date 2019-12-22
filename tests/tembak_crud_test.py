@@ -14,11 +14,9 @@ class TestClientCrud():
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
-    
     def test_tembak_get_valid(self, client):
         db_reset()
         token = create_token(False)
-
         data = {
             'text': 'aku bingung'
         }
@@ -27,7 +25,6 @@ class TestClientCrud():
         res_json = json.loads(res.data)
 
         assert res.status_code == 200
-    
     def test_tembak_get_valid(self, client):
         db_reset()
         token = create_token(False)
