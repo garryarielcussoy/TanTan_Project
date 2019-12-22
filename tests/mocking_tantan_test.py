@@ -1,11 +1,13 @@
 from unittest import mock
 from unittest.mock import patch
-import json
+import json, os
 from . import app, client, cache, create_token, db_reset
+from io import BytesIO
+from PIL import Image, ImageDraw
 
 class TestMockingTanTan():
     # Mocking Function
-    def api_mock_get_ip(*args, **kwargs):
+    def api_mock(*args, **kwargs):
         class MockResponse:
             def __init__(self, json_data, status_code):
                 self.json_data = json_data
@@ -15,11 +17,13 @@ class TestMockingTanTan():
                 return self.json_data
         
         if len(args)>0:
+            # IPGeolocation Mocking
             if args[0] == 'https://api.ipgeolocation.io/ipgeo':
                 return MockResponse({
                     "latitude": "-6.21462",
                     "longitude": "106.84513",
                 }, 200)
+            # Zomato Mocking
             elif args[0] == 'https://developers.zomato.com/api/v2.1/search':
                 return MockResponse({
                     "restaurants": [
@@ -38,25 +42,81 @@ class TestMockingTanTan():
                         }
                     ]
                 }, 200)
+            # Simsimi Mocking
+            elif args[0] == 'https://wsapi.simsimi.com/190410/talk':
+                return MockResponse({
+                    "atext": "Halooooo"
+                }, 200)
+            # Meetup Mocking
+            elif args[0] == 'https://api.meetup.com/find/locations':
+                return MockResponse([
+                    {"location": "Jakarta"}
+                ], 200)
+            # Anime Mocking
+            elif args[0] == 'https://kitsu.io/api/edge/anime':
+                return MockResponse({
+                    "data": [
+                        {
+                            "attributes": {
+                                "titles": "Shigatsu wa Kimi no Uso",
+                                "posterImage": {
+                                    "small": "https://media.kitsu.io/anime/poster_images/8403/small.jpg"
+                                }
+                            },
+                            "links": {
+                                "self": "https://image.com"
+                            },
+                            "id": "8403"
+                        }
+                    ]
+                }, 200)
+            # elif args[0] == 'https://media.kitsu.io/anime/poster_images/8403/small.jpg':
+            #     image_anime = requests.get("https://media.kitsu.io/anime/poster_images/8403/small.jpg")
+            #     image_open = Image.open(BytesIO(image_anime.content))
+            #     return image_open.show(), 200
         return MockResponse(None, 404)
     
-    # Get IP Test
-    @mock.patch('requests.get', side_effect=api_mock_get_ip)
-    def test_get_ip(self, test_get_ip_mock, client):
-        # Hit Tembak
+    # Get Restaurant Test
+    @mock.patch('requests.get', side_effect=api_mock)
+    def test_get_restaurant(self, test_get_restaurant_mock, client):
         db_reset()
         token = create_token(False)
         res = client.get('/tembak', headers={'Authorization': 'Bearer ' + token}, query_string={"text": "TanTan lapeeeer"})
         
-        # # Get IP Location
-        # res = client.get('https://api.ipgeolocation.io/ipgeo', params={'ip': args['ip'], 'apiKey':'49794d165c0541438235dd9544a7922a'})
-        # res_json = json.loads(res.data)
-        # assert res.status_code == 200
-        # assert res_json['latitude'] == "-6.21462"
-        # assert res_json['longitude'] == "106.84513"
-
-        # Get Nearby Restaurant
-        # res = client.get(, params={}, headers={'user-key': '652b214e65c6d08ddcd5246fd4f8fd2d'})
         res_json = json.loads(res.data)
         assert res.status_code == 200
         assert res_json['Daftar Restaurant Terdekat:'][0]['Nama Restaurant'] == "Seoul Yummy"
+    
+    # Simsimi Test
+    @mock.patch('requests.post', side_effect=api_mock)
+    def test_get_simsimi(self, test_get_simsimi_mock, client):
+        db_reset()
+        token = create_token(False)
+        res = client.get('/tembak', headers={'Authorization': 'Bearer ' + token}, query_string={"text": "Halo TanTan"})
+        
+        res_json = json.loads(res.data)
+        assert res.status_code == 200
+        assert res_json['Pesan dari TanTan'] == "Halooooo"
+
+    # Get Friend Test
+    @mock.patch('requests.get', side_effect=api_mock)
+    def test_get_friend(self, test_get_friend_mock, client):
+        db_reset()
+        token = create_token(False)
+        res = client.get('/tembak', headers={'Authorization': 'Bearer ' + token}, query_string={"text": "Sendirian"})
+        
+        res_json = json.loads(res.data)
+        assert res.status_code == 200
+        assert res_json['Daftar Teman yang Bisa Diajak'][0]['location'] == "Jakarta"
+    
+    # Get Anime Test
+    @mock.patch('requests.get', side_effect=api_mock)
+    def test_get_anime(self, test_get_anime_mock, client):
+        db_reset()
+        token = create_token(False)
+        os.environ['ANIME'] = '1'
+        res = client.get('/tembak', headers={'Authorization': 'Bearer ' + token}, query_string={"text": "Shigatsu"})
+        os.environ['ANIME'] = '0'
+
+        res_json = json.loads(res.data)
+        assert res.status_code == 200

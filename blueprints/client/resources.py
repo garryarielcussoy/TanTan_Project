@@ -123,7 +123,6 @@ class ClientList(Resource):
             app.logger.debug('DEBUG : %s', client)
 
             return marshal(client, Client.client_fields), 200, {'Content-Type':'application/json'}
-        return {'status': 'invalid username or password'}
 
 api.add_resource(ClientList, '')
 

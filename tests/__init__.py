@@ -4,6 +4,7 @@ from flask import Flask, request
 from blueprints import app, db
 from blueprints.client.model import Client
 from app import cache
+
 # Password Encription
 from password_strength import PasswordPolicy
 import hashlib
@@ -17,6 +18,19 @@ def db_reset():
     db.session.add(client)
     db.session.commit()
 
+    # For testing if case
+    for i in range(1, 10):
+        password_hash = hashlib.md5(("PASSUSER" + str(i)).encode()).hexdigest()
+        client = Client('NAMA' + str(i), 'USER' + str(i), password_hash, '03-0' + str(i) + '-1996','120.188.37.192')
+        db.session.add(client)
+        db.session.commit()
+    
+    for i in range(10, 13):
+        password_hash = hashlib.md5(("PASSUSER" + str(i)).encode()).hexdigest()
+        client = Client('NAMA' + str(i), 'USER' + str(i), password_hash, '03-' + str(i) + '-1996','120.188.37.192')
+        db.session.add(client)
+        db.session.commit()
+
 def call_client(request):
     client = app.test_client()
     return client
@@ -25,7 +39,7 @@ def call_client(request):
 def client(request):
     return call_client(request)
 
-def create_token(isInternal):
+def create_token(isInternal, nomor_urut = None):
     # Checking whether internal or not and prepare the data
     if isInternal:
         cachename = "test-internal-token"
@@ -33,11 +47,17 @@ def create_token(isInternal):
             'username': 'internal',
             'password': 'tantan'
         }
-    else:
+    elif not isInternal and nomor_urut is None:
         cachename = "test-non-internal-token"
         data = {
             'username': 'user01',
             'password': 'passuser01'
+        }
+    else:
+        cachename = "test-non-internal-spesifik-token" + str(nomor_urut)
+        data = {
+            'username': 'USER' + str(nomor_urut),
+            'password': 'PASSUSER' + str(nomor_urut)
         }
 
     token = cache.get(cachename)
