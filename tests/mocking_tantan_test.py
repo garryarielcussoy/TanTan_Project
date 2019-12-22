@@ -2,6 +2,8 @@ from unittest import mock
 from unittest.mock import patch
 import json, os
 from . import app, client, cache, create_token, db_reset
+from io import BytesIO
+from PIL import Image, ImageDraw
 
 class TestMockingTanTan():
     # Mocking Function
@@ -58,7 +60,7 @@ class TestMockingTanTan():
                             "attributes": {
                                 "titles": "Shigatsu wa Kimi no Uso",
                                 "posterImage": {
-                                    "small": "image.jpg"
+                                    "small": "https://media.kitsu.io/anime/poster_images/8403/small.jpg"
                                 }
                             },
                             "links": {
@@ -68,6 +70,10 @@ class TestMockingTanTan():
                         }
                     ]
                 }, 200)
+            # elif args[0] == 'https://media.kitsu.io/anime/poster_images/8403/small.jpg':
+            #     image_anime = requests.get("https://media.kitsu.io/anime/poster_images/8403/small.jpg")
+            #     image_open = Image.open(BytesIO(image_anime.content))
+            #     return image_open.show(), 200
         return MockResponse(None, 404)
     
     # Get Restaurant Test
@@ -114,4 +120,3 @@ class TestMockingTanTan():
 
         res_json = json.loads(res.data)
         assert res.status_code == 200
-        assert res_json["Pesan dari TanTan:"]["Judul"] == 'Shigatsu wa Kimi no Uso'

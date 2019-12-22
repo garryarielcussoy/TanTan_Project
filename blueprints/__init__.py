@@ -33,7 +33,7 @@ def internal_required(fn):
 # DB Setup
 # try:
 env = os.environ.get('FLASK_ENV', 'development')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/testing' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'        
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/testing' if (env == 'testing') else 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'  
 # except Exception as e:
 #     raise e
 

@@ -26,7 +26,9 @@ class Conversation(Resource):
     def get(self):
         # Set Environment
         if 'ANIME' not in os.environ:
-            os.environ['ANIME'] = '0' 
+            os.environ['ANIME'] = '0'
+
+        if 'FLASK_ENV' not in os.environ: os.environ['FLASK_ENV'] = 'development' 
         
         claims = get_jwt_claims()
         client_target = Client.query.filter_by(username = claims['username']).first()
@@ -119,12 +121,12 @@ class Conversation(Resource):
             anime_id = anime_result_json["data"][0]["id"]
             anime_url = anime_result_json["data"][0]["attributes"]["posterImage"]["small"][-10:]
             image_anime = requests.get("https://media.kitsu.io/anime/poster_images/" + anime_id + "/small.jpg")
-            image_open = Image.open(BytesIO(image_anime.content))
             show_anime = {
                 "Judul": anime_title,
                 "Link": anime_link,
             }
-            image_open.show()
+            if os.environ['FLASK_ENV'] == 'development': image_open = Image.open(BytesIO(image_anime.content)).show()
+                # image_open.show()
             return show_anime, 200
 
         elif re.search(r"[Ss]endiri([a]*n)?", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
@@ -151,7 +153,9 @@ class Conversation(Resource):
                 # 'x-api-key': 'IcIBgu/dPH1MnaMoHuEbXIaCm8vne3jxJ6zK93zu'
                 # 'x-api-key': 'd9OQolw9uHQkKYevStyJElPyBjSkEiMW4H2Sn6hj'
                 # 'x-api-key': 'biW4XAMCgRDyQhwJF5924id9z2xcmSj7l18unn'
-                'x-api-key': 'R8VAfoLvApo4zUrUyWQ8/0umLAhE3d79g88q8sPc'
+                # 'x-api-key': 'R8VAfoLvApo4zUrUyWQ8/0umLAhE3d79g88q8sPc'
+                # 'x-api_key': 'yxr2q7KOFbefdMrAxUcKLn9uzr/K6YNVCCbEQCiF'
+                'x-api-key': 'FLd2Sirf0WJ3pkwB4OHhWCoynYyO4loSAV8JVXBe'
             }
             your_text = {
                 "utext": args['text'],
