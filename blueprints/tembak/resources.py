@@ -1,5 +1,7 @@
 import requests
 import re
+from io import BytesIO
+from PIL import Image, ImageDraw
 import os
 from flask import Blueprint
 from flask_restful import Api, reqparse, Resource, marshal
@@ -116,12 +118,14 @@ class Conversation(Resource):
             anime_link = anime_result_json["data"][0]["links"]["self"]
             anime_id = anime_result_json["data"][0]["id"]
             anime_url = anime_result_json["data"][0]["attributes"]["posterImage"]["small"][-10:]
-            # image = requests.get("https://media.kitsu.io/anime/poster_images/" + anime_id + "/small.jpg?")
+            image_anime = requests.get("https://media.kitsu.io/anime/poster_images/" + anime_id + "/small.jpg")
+            image_open = Image.open(BytesIO(image_anime.content))
             show_anime = {
                 "Judul": anime_title,
                 "Link": anime_link,
             }
-            return {"Pesan dari TanTan:": show_anime}, 200
+            image_open.show()
+            return show_anime, 200
 
         elif re.search(r"[Ss]endiri([a]*n)?", args['text']) or re.search(r"[Mm][Aa]+[Kk][Aa]+[Nn]+", args['text']):
             # Step - 1 - Check lon lat from ip
